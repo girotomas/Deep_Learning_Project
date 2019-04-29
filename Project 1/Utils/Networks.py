@@ -159,19 +159,19 @@ class CNN_SP(nn.Module):
             nn.ReLU(),                      # activation
             #nn.Dropout2d(0.05),
             nn.MaxPool2d(kernel_size=2),    # choose max value in 2x2 area, output shape (16, 14, 14)
-            nn.Dropout2d(0.01),
+            nn.Dropout2d(0.05),
             nn.BatchNorm2d(16),
         )
         self.conv2 = nn.Sequential(         # input shape (16, 14, 14)
             nn.Conv2d(16, 32, 5, 1, 4),     # output shape (32, 14, 14)
             nn.ReLU(),                      # activation
             nn.MaxPool2d(2),                # output shape (32, 7, 7)
-            nn.Dropout2d(0.01),
+            nn.Dropout2d(0.05),
 
             nn.BatchNorm2d(32),
 
         )
-
+        # not used
         self.conv3 = nn.Sequential(         # input shape (16, 14, 14)
             nn.Conv2d(32, 64, 5, 1, 4),     # output shape (32, 14, 14)
             nn.ReLU(),                      # activation
@@ -185,17 +185,18 @@ class CNN_SP(nn.Module):
         self.fc1 = nn.Sequential(
             nn.Linear(32 * 7 * 7, 20),  # fully connected layer, output 10 classes
             #nn.BatchNorm1d(32),
-            nn.Dropout(0.01)
+            nn.Dropout(0.1)
         )
         self.fc2 = nn.Sequential(
             nn.Linear(20, 10) ,  # fully connected layer, output 10 classes
             nn.BatchNorm1d(10),
-            nn.Dropout(0.01)
+            nn.Dropout(0.1)
         )
 
         self.fc3 = nn.Sequential(
             nn.Linear(20, 2) ,  # fully connected layer, output 10 classes
-            nn.BatchNorm1d(2)
+            nn.BatchNorm1d(2),
+            nn.Dropout(0.05)
         )
 
     def forward(self, x):
