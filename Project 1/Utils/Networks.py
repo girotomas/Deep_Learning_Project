@@ -109,9 +109,45 @@ class CNN(nn.Module):
 ########################################################################
 
 # SHARED CONVOLUTIONAL NETWORK
-class CNN_S(nn.Module):
+class CNN_S(CNN):
     def __init__(self):
-        super(CNN_S, self).__init__()
+        super(CNN_S, self).__init__() # take network structure from above, ad weight sharing in forward step
+        
+    def forward(self, x):
+        #first convolutional layer
+        _x = torch.reshape(x[:,0,:,:], (-1, 1, 14, 14))
+        _x1 = self.conv1(_x)
+        _x = torch.reshape(x[:,1,:,:], (-1, 1, 14, 14))
+        _x2 = self.conv1(_x)
+
+        #second convolutional layer
+
+        _x1 = self.conv2(_x1)
+        _x2 = self.conv2(_x2)
+
+        #flatten images
+        _x1 = _x1.view(_x1.size(0), -1)           # flatten the output of conv2 to (batch_size, 32 * 7 * 7)
+        _x2 = _x2.view(_x2.size(0), -1)           # flatten the output of conv2 to (batch_size, 32 * 7 * 7)
+
+        #first fc layer
+        _x1 = F.relu(self.fc1(_x1))
+        _x2 = F.relu(self.fc1(_x2))
+
+        #second fc layer
+        _x1 = self.fc2(_x1)
+        _x2 = self.fc2(_x2)
+
+        #x = nn.LogSoftmax(x)
+        return torch.cat((_x1, _x2), 1)   # return x for visualization
+
+
+##########################################################################
+
+# SHARED CONVNET WITH PREDICTION
+
+class CNN_SP(nn.Module):
+    def __init__(self):
+        super(CNN_SP, self).__init__()
         self.conv1 = nn.Sequential(         # input shape (1, 28, 28)
             nn.Conv2d(
                 in_channels=1,              # input height
@@ -156,6 +192,12 @@ class CNN_S(nn.Module):
             nn.BatchNorm1d(10),
             nn.Dropout(0.01)
         )
+
+        self.fc3 = nn.Sequential(
+            nn.Linear(20, 2) ,  # fully connected layer, output 10 classes
+            nn.BatchNorm1d(2)
+        )
+
     def forward(self, x):
         #first convolutional layer
         _x = torch.reshape(x[:,0,:,:], (-1, 1, 14, 14))
@@ -180,5 +222,14 @@ class CNN_S(nn.Module):
         _x1 = self.fc2(_x1)
         _x2 = self.fc2(_x2)
 
-        #x = nn.LogSoftmax(x)
-        return torch.cat((_x1, _x2), 1)   # return x for visualization
+        #concatenate and retrun auxilary output
+        _x = torch.cat((_x1, _x2), 1)   
+        aux_out = _x
+
+        #apply relu
+        _x = F.relu(_x)
+
+        #third fc layer
+        _x = self.fc3(_x)
+
+        return aux_out, _x

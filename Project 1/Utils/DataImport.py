@@ -25,8 +25,11 @@ class DataImport():
         self.train_classes_binary = torch.cat((self.train_classes_binary_0, self.train_classes_binary_1),1)
         self.test_classes_binary = torch.cat((self.test_classes_binary_0, self.test_classes_binary_1),1)
 
-        self.Train = {"Train Input": self.train_input, "Train Target": self.train_target, "Train Classes": self.train_classes, "Train CB": self.train_classes_binary, "Train CB0":self.train_classes_binary_0, "Train CB1":self.train_classes_binary_1}
-        self.Test = {"Test Input": self.test_input, "Test Target":self.test_target, "Test Classes":self.test_classes, "Test CB":self.test_classes_binary, "Test CB0":self.test_classes_binary_0, "Test CB1":self.test_classes_binary_1}
+        train_target_binary, test_target_binary = self.target_to_binary(self.train_target), self.target_to_binary(self.test_target)
+        self.train_target_binary, self.test_target_binary = Variable(train_target_binary.to(device)), Variable(test_target_binary.to(device))
+
+        self.Train = {"Train Input": self.train_input, "Train Target": self.train_target, "Train TB": self.train_target_binary, "Train Classes": self.train_classes, "Train CB": self.train_classes_binary, "Train CB0":self.train_classes_binary_0, "Train CB1":self.train_classes_binary_1}
+        self.Test = {"Test Input": self.test_input, "Test Target":self.test_target, "Test TB": self.test_target_binary, "Test Classes":self.test_classes, "Test CB":self.test_classes_binary, "Test CB0":self.test_classes_binary_0, "Test CB1":self.test_classes_binary_1}
 
          
 
@@ -41,6 +44,12 @@ class DataImport():
             classes_binary_0[i,int(Arr[i,0].item())] = 1
             classes_binary_1[i,int(Arr[i,1].item())] = 1
         return classes_binary_0, classes_binary_1
+
+    def target_to_binary(self, target):
+        target_binary = torch.zeros(1000,2)
+        for i in range(1000):
+            target_binary[i,target[i].item()] = 1
+        return target_binary
 
     # convert output of model (Nx20) to decimal class label (Nx2)
     def output_to_pred_classes(self,output):
