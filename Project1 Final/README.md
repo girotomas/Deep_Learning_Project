@@ -9,15 +9,25 @@ This folder contains the relevant files fror the first mini project. The structu
 
 .
 ├── data
+
 │   └── mnist
+
 ├── Project1_Final.ipynb
+
 ├── README.md
+
 └── Utils
+
     ├── DataImport.py
+    
     ├── dlc_practical_prologue.py
+    
     ├── errs.py
+    
     ├── __init__.py
+    
     ├── Networks.py
+    
 
 Data: contains MNIST downloaded data
 
