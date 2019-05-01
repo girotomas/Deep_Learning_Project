@@ -7,7 +7,7 @@ Tomas Giro, Daniele Rocchi, Giulio Trichilo
 
 This folder contains the relevant files fror the first mini project. The structure is as follows:
 
-.
+
 ├── data
 
 │   └── mnist
