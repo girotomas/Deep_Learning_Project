@@ -1,4 +1,4 @@
-import dlc_practical_prologue as prologue
+import Utils.dlc_practical_prologue as prologue
 from torch.autograd import Variable
 from torch import torch
 
