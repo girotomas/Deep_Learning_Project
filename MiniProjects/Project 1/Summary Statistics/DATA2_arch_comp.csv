@@ -1,0 +1,3 @@
+training mode,mean comparison acc,std comparison acc
+with auxiliar loss,78.82250213623047,0.9689465016126633
+without auxiliar loss,77.91250038146973,0.820300854742527
