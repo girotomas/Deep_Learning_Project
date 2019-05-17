@@ -11,12 +11,10 @@ import numpy as np
 from torch import nn
 import matplotlib.pyplot as plt
 import dlc_practical_prologue as prologue
-import pandas as pd
 
 print('Modules imported.')
 print('Please answer the following questions with your keyboard and press ENTER')
-load_data = input ("would you like to load data? [yes / no] ")
-load_data = (load_data=='yes')
+
 
 
 
@@ -53,32 +51,32 @@ class Flatten(torch.nn.Module):
 # Deep
 
 # Note: arch1,arch2,arch3 are functions that instanciate a new architecture not  architectures !
-arch1 = lambda :  nn.Sequential(                     # input shape (100, 2, 14, 14)
+arch1 = lambda :  nn.Sequential(          
             nn.Conv2d(
-                in_channels=1,              # input height
-                out_channels=35,            # n_filters
-                kernel_size=3,              # filter size
-                stride=1,                   # filter movement/step
-                padding=1,                  # if want same width and length of this image after Conv2d, padding=(kernel_size-1)/2 if stride=1
-            ),                              # output shape (16, 14, 14)
-            nn.ReLU(),                      # activation
-            nn.MaxPool2d(kernel_size=2),    # choose max value in 2x2 area, output shape (16, 7, 7)
-            nn.Conv2d(35, 32, 5, 1, 4),     # output shape (32, 14, 14)
-            nn.ReLU(),                      # activation
-            nn.MaxPool2d(2),                # output shape (32, 7, 7)
+                in_channels=1,             
+                out_channels=35,            
+                kernel_size=3,              
+                stride=1,                   
+                padding=1,                  
+            ),                             
+            nn.ReLU(),                      
+            nn.MaxPool2d(kernel_size=2),   
+            nn.Conv2d(35, 32, 5, 1, 4),     
+            nn.ReLU(),                      
+            nn.MaxPool2d(2),                
             Print('a'),
             Flatten(),        
             Print('b'),
-            nn.Linear(800,25),              # fully connected layer, output 10 classes
+            nn.Linear(800,25),             
             nn.Linear(25,25), 
-            nn.Linear(25, 10) ,             # fully connected layer, output 10 classes
+            nn.Linear(25, 10) ,             
             nn.BatchNorm1d(10),
             nn.ReLU())
 
 
 # Fully connected
 
-arch2 = lambda  : nn.Sequential(                      # input shape (1, 28, 28)
+arch2 = lambda  : nn.Sequential(                    
             Print('a'),
             Flatten(),
             Print('b'),
@@ -96,23 +94,23 @@ arch2 = lambda  : nn.Sequential(                      # input shape (1, 28, 28)
 
 # Deep with sigmoids
 
-arch3 = lambda :  nn.Sequential(                     # input shape (100, 2, 14, 14)
+arch3 = lambda :  nn.Sequential(            
             nn.Conv2d(
                 in_channels=1,              # input height
                 out_channels=35,            # n_filters
                 kernel_size=3,              # filter size
                 stride=1,                   # filter movement/step
                 padding=1,                  # if want same width and length of this image after Conv2d, padding=(kernel_size-1)/2 if stride=1
-            ),                              # output shape (16, 14, 14)
+            ),                              
             nn.Sigmoid(),                      # activation
-            nn.MaxPool2d(kernel_size=2),    # choose max value in 2x2 area, output shape (16, 7, 7)
-            nn.Conv2d(35, 32, 5, 1, 4),     # output shape (32, 14, 14)
+            nn.MaxPool2d(kernel_size=2),   
+            nn.Conv2d(35, 32, 5, 1, 4),     
             nn.Sigmoid(),                      # activation
-            nn.MaxPool2d(2),                # output shape (32, 7, 7)
+            nn.MaxPool2d(2),               
             Print('a'),
             Flatten(),        
             Print('b'),
-            nn.Linear(800,25),              # fully connected layer, output 10 classes
+            nn.Linear(800,25),              # fully connected layer, output 25 classes
             nn.Linear(25,25), 
             nn.Linear(25, 10) ,             # fully connected layer, output 10 classes
             nn.BatchNorm1d(10),
@@ -194,14 +192,15 @@ def count_parameters(model):
 
 
 # In[4]:
+DATA= []
 
 
-DATA=pd.DataFrame(columns = ['architecture', 
+columns = ['architecture', 
                              'training mode',
                              'weight sharing', 
                              'history',
                              'model', 
-                            'loss function'])
+                            'loss function']
 
 for architecture in ['deep', 'fully connected', 'deep with sigmoids']:
     for weight_sharing in [True, False]:
@@ -216,16 +215,15 @@ for architecture in ['deep', 'fully connected', 'deep with sigmoids']:
             else:
                 raise Exception('wrong loss function')
             
-            # history is an dictionary we created to store the values required to plot the graph
+            # DATA stores all the values for the data and all the trained models without erasing any training
             
-            DATA = DATA.append({'architecture':architecture,
+            DATA +=[{'architecture':architecture,
                                'training mode': training_mode,
                                'weight sharing': weight_sharing,
-                               'history': pd.DataFrame(),
+                               'history': [],
                                'model':model,
                                'loss function':loss_function,
-                               'number parameters': count_parameters(model)},
-                               ignore_index=True)
+                               'number parameters': count_parameters(model)}]
 
 
 # In[5]:
@@ -234,11 +232,10 @@ for architecture in ['deep', 'fully connected', 'deep with sigmoids']:
 
 
 # In[6]:
-if not load_data:
-	print('Loading train dataset, please wait.')
-	# Load the data
-	train_input, train_target, train_classes, test_input, test_target, test_classes = prologue.generate_pair_sets(1000)
-	print('Data loaded')
+print('Loading train dataset, please wait.')
+# Load the data
+train_input, train_target, train_classes, test_input, test_target, test_classes = prologue.generate_pair_sets(1000)
+print('Data loaded')
 
 # In[8]:
 
@@ -309,7 +306,7 @@ def plot_graphs(data_row, d):
 
 def run_number(i):
 
-    data_row = DATA.iloc[i]
+    data_row = DATA[i]
     model = data_row['model']
     model.reset()
     loss_function = data_row['loss function']
@@ -361,8 +358,8 @@ def run_number(i):
         for b in range(0, train_input.size(0), mini_batch_size):
 
             mini_batch_input = train_input.narrow(0, b, mini_batch_size)
-            mini_batch_target = train_target.narrow(0, b, mini_batch_size) #classification labels Nx1
-            mini_batch_target_aux = train_classes.narrow(0, b, mini_batch_size) #binary 'what number are these images' Nx20
+            mini_batch_target = train_target.narrow(0, b, mini_batch_size)
+            mini_batch_target_aux = train_classes.narrow(0, b, mini_batch_size)
 
 
             #output_aux is the Nx20 output of the second fc layer corresponding to what image pairs were predicted
@@ -416,9 +413,9 @@ def run_number(i):
 
 
             
-    history_of_historys = DATA.iloc[i,3]
-    history_of_historys = history_of_historys.append(d, ignore_index = True)
-    DATA.at[i,'history'] = history_of_historys
+    history_of_historys = DATA[i]['history']
+    history_of_historys = history_of_historys.append(d)
+    DATA[i]['history'] = history_of_historys
 
 
     plot_graphs(data_row, d )
@@ -426,36 +423,14 @@ def run_number(i):
 
 
 
-# In[ ]:
 
-
-
-
-# In[13]:
-
-
-#DATA.iloc[:,range(4)].to_pickle('./DATA2')
-
-
-# In[ ]:
-
-
-if load_data: DATA = pd.read_pickle('./DATA2')
-
-
-# In[25]:
-
-
-print('Which model would you like to see? insert number [0-11]')
-print(DATA[['architecture', 'training mode', 'weight sharing' ]].to_string())
 number = input('Which model would you like to see? insert number [0-11]')
 number = int(number)
 
 assert(number in range(0,12))
+run_number(number)
 
-if load_data: plot_graphs(DATA.iloc[number], DATA.iloc[number]['history'].iloc[-1])
-else: run_number(number)
-# In[33]:
+
 
 
 
