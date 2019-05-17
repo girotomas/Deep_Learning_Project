@@ -1,0 +1,3 @@
+weight sharing,mean comparison acc,std comparison acc
+True,77.37166849772136,2.8025045742591224
+False,76.3099988301595,1.3437821368376415

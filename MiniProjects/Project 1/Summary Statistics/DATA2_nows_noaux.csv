@@ -1,4 +1,0 @@
-,architecture,training mode,weight sharing,mean comparison acc,std comparison acc
-2,deep,without auxiliar loss,False,78.82999420166016,0.7156095504760742
-10,deep with sigmoids,without auxiliar loss,False,75.55999755859375,1.0451806783676147
-6,fully connected,without auxiliar loss,False,74.57999420166016,0.4915284514427185

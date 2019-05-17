@@ -1,0 +1,4 @@
+architecture,mean comparison acc,std comparison acc
+deep,80.1975040435791,0.92593864351511
+deep with sigmoids,76.5374984741211,0.8633087128400803
+fully connected,73.7874984741211,4.430182710289955
