@@ -1,9 +1,3 @@
 Please read `report.pdf`
-
-
-NOTES FOR PROJECT 1
---------------------------------
-EXECUTION SPEED UNDER VIRTUAL MACHINE IS INFERIOR COMPARED TO USING A NORMAL PC. WE NOTICE THAT IF THE DEBIAN VM IS RAN WITHIN WINDOWS, PERFORMANCE IS SLOWER THAN WHEN THE VM IS RAN IN UBUNTU. 
---------------------------------
-THE JUPYTER NOTEBOOK ADDITIONALLY IMPORTS PANDAS FOR BETTER FORMATTING AND COMPUTATION OF ADDITIONAL SUMMARY STATISTICS OF INTEREST,
-HOWEVER IT IS IN NO WAY ESSENTIAL FOR THE MODEL TO RUN. (TEST.PY DOES NOT USE PANDAS)
+This project was biult as an assignment for the course of Deep Learning at the EPFL taught by François Fleuret.
+It attempts to use a deep learning model to analyse two MNIST numbers and tell which one is greater.
